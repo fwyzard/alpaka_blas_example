@@ -16,15 +16,16 @@ public:
     {
     }
 
-    template<int N, typename T>
+    template<typename T>
     inline void gemm(
         alpaka::BufCpu<T, Dim1D, Idx> const& A,
         alpaka::BufCpu<T, Dim1D, Idx> const& B,
-        alpaka::BufCpu<T, Dim1D, Idx>& C)
+        alpaka::BufCpu<T, Dim1D, Idx>& C,
+        Idx size)
     {
-        assert(alpaka::getExtentProduct(A) == N * N);
-        assert(alpaka::getExtentProduct(B) == N * N);
-        assert(alpaka::getExtentProduct(C) == N * N);
+        assert(alpaka::getExtentProduct(A) == size * size);
+        assert(alpaka::getExtentProduct(B) == size * size);
+        assert(alpaka::getExtentProduct(C) == size * size);
 
         // Set alpha and beta for GEMM: C = alpha*A*B + beta*C
         const T alpha = 1;
@@ -35,17 +36,17 @@ public:
             CblasColMajor, // Layout
             CblasNoTrans, // Transpose A? No
             CblasNoTrans, // Transpose B? No
-            N, // m, n, k
-            N,
-            N,
+            size, // m, n, k
+            size,
+            size,
             alpha, // alpha
             A.data(), // A and its leading dimension
-            N,
+            size,
             B.data(), // B and its leading dimension
-            N,
+            size,
             beta, // beta
             C.data(), // C and its leading dimension
-            N);
+            size);
     }
 };
 

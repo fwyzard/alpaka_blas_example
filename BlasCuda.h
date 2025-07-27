@@ -32,15 +32,16 @@ public:
         CUBLAS_CHECK(cublasDestroy(m_handle));
     }
 
-    template<int N, typename T>
+    template<typename T>
     inline void gemm(
         alpaka::BufCudaRt<T, Dim1D, Idx> const& A,
         alpaka::BufCudaRt<T, Dim1D, Idx> const& B,
-        alpaka::BufCudaRt<T, Dim1D, Idx>& C)
+        alpaka::BufCudaRt<T, Dim1D, Idx>& C,
+        Idx size)
     {
-        assert(alpaka::getExtentProduct(A) == N * N);
-        assert(alpaka::getExtentProduct(B) == N * N);
-        assert(alpaka::getExtentProduct(C) == N * N);
+        assert(alpaka::getExtentProduct(A) == size * size);
+        assert(alpaka::getExtentProduct(B) == size * size);
+        assert(alpaka::getExtentProduct(C) == size * size);
 
         // Set alpha and beta for GEMM: C = alpha*A*B + beta*C
         const T alpha = 1;
@@ -51,17 +52,17 @@ public:
             m_handle,
             CUBLAS_OP_N, // Transpose A? No
             CUBLAS_OP_N, // Transpose B? No
-            N, // m, n, k
-            N,
-            N,
+            size, // m, n, k
+            size,
+            size,
             &alpha, // alpha
             A.data(), // A and its leading dimension
-            N,
+            size,
             B.data(), // B and its leading dimension
-            N,
+            size,
             &beta, // beta
             C.data(), // C and its leading dimension
-            N));
+            size));
     }
 
 private:
