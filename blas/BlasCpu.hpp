@@ -2,7 +2,7 @@
 
 #ifdef ALPAKA_ACC_CPU_B_SEQ_T_SEQ_ENABLED
 
-#    include "Blas.h"
+#    include "Blas.hpp"
 
 #    include <alpaka/alpaka.hpp>
 

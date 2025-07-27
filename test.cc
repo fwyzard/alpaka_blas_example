@@ -1,7 +1,5 @@
-#include "BlasCpu.h"
-#include "BlasCuda.h"
-
 #include <alpaka/alpaka.hpp>
+#include "blas/blas.hpp"
 
 #include <iomanip>
 #include <iostream>

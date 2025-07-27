@@ -2,12 +2,11 @@
 
 #ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
 
-#    include "Blas.h"
+#    include "Blas.hpp"
 
 #    include <alpaka/alpaka.hpp>
 
 #    include <cublas_v2.h>
-#    include <cuda_runtime.h>
 
 // Check for cuBLAS errors
 #    define CUBLAS_CHECK(err)                                                                                         \
