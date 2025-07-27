@@ -1,6 +1,5 @@
 #include "BlasCpu.h"
 #include "BlasCuda.h"
-#include "common.h"
 
 #include <alpaka/alpaka.hpp>
 
@@ -8,15 +7,24 @@
 #include <iostream>
 #include <random>
 
+// index and size type
+using Idx = uint32_t;
+
+// dimensions
+using Dim0D = alpaka::DimInt<0u>;
+using Dim1D = alpaka::DimInt<1u>;
+using Dim2D = alpaka::DimInt<2u>;
+using Dim3D = alpaka::DimInt<3u>;
+
 // Print a column-major matrix
-template<typename T>
-void print(alpaka::BufCpu<T, Dim1D, Idx> const& M, Idx size)
+template<typename T, typename TIdx>
+void print(alpaka::BufCpu<T, Dim1D, TIdx> const& M, TIdx size)
 {
     assert(alpaka::getExtentProduct(M) == size * size);
 
-    for(int row = 0; row < size; ++row)
+    for(TIdx row = 0; row < size; ++row)
     {
-        for(int col = 0; col < size; ++col)
+        for(TIdx col = 0; col < size; ++col)
         {
             std::cout << std::fixed << std::setprecision(2) << std::setw(7) << M[col * size + row] << " ";
         }
@@ -26,16 +34,16 @@ void print(alpaka::BufCpu<T, Dim1D, Idx> const& M, Idx size)
 
 int main()
 {
-    constexpr int size = 4;
+    constexpr Idx size = 4;
 
     // Host platform and device
     alpaka::PlatformCpu host_platform{};
     auto host = alpaka::getDevByIdx(host_platform, 0u);
 
     // Allocate matrices (column-major)
-    auto A = alpaka::allocBuf<float, Idx>(host, Idx{size * size});
-    auto B = alpaka::allocBuf<float, Idx>(host, Idx{size * size});
-    auto C = alpaka::allocBuf<float, Idx>(host, Idx{size * size});
+    auto A = alpaka::allocBuf<float, Idx>(host, size * size);
+    auto B = alpaka::allocBuf<float, Idx>(host, size * size);
+    auto C = alpaka::allocBuf<float, Idx>(host, size * size);
 
     // Fill A and B with random floats centered around 0
     std::random_device rd;
@@ -60,9 +68,9 @@ int main()
         alpaka::DevCudaRt device = alpaka::getDevByIdx(platform, 0u);
         alpaka::Queue<alpaka::DevCudaRt, alpaka::NonBlocking> queue{device};
 
-        auto A_d = alpaka::allocAsyncBuf<float, Idx>(queue, Idx{size * size});
-        auto B_d = alpaka::allocAsyncBuf<float, Idx>(queue, Idx{size * size});
-        auto C_d = alpaka::allocAsyncBuf<float, Idx>(queue, Idx{size * size});
+        auto A_d = alpaka::allocAsyncBuf<float, Idx>(queue, size * size);
+        auto B_d = alpaka::allocAsyncBuf<float, Idx>(queue, size * size);
+        auto C_d = alpaka::allocAsyncBuf<float, Idx>(queue, size * size);
         alpaka::memcpy(queue, A_d, A);
         alpaka::memcpy(queue, B_d, B);
 

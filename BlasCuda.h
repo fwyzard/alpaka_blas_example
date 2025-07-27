@@ -3,7 +3,6 @@
 #ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
 
 #    include "Blas.h"
-#    include "common.h"
 
 #    include <alpaka/alpaka.hpp>
 
@@ -32,12 +31,12 @@ public:
         CUBLAS_CHECK(cublasDestroy(m_handle));
     }
 
-    template<typename T>
+    template<typename T, typename TIdx>
     inline void gemm(
-        alpaka::BufCudaRt<T, Dim1D, Idx> const& A,
-        alpaka::BufCudaRt<T, Dim1D, Idx> const& B,
-        alpaka::BufCudaRt<T, Dim1D, Idx>& C,
-        Idx size)
+        alpaka::BufCudaRt<T, alpaka::DimInt<1u>, TIdx> const& A,
+        alpaka::BufCudaRt<T, alpaka::DimInt<1u>, TIdx> const& B,
+        alpaka::BufCudaRt<T, alpaka::DimInt<1u>, TIdx>& C,
+        TIdx size)
     {
         assert(alpaka::getExtentProduct(A) == size * size);
         assert(alpaka::getExtentProduct(B) == size * size);

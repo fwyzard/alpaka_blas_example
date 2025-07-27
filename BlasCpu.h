@@ -3,7 +3,6 @@
 #ifdef ALPAKA_ACC_CPU_B_SEQ_T_SEQ_ENABLED
 
 #    include "Blas.h"
-#    include "common.h"
 
 #    include <alpaka/alpaka.hpp>
 
@@ -16,12 +15,12 @@ public:
     {
     }
 
-    template<typename T>
+    template<typename T, typename TIdx>
     inline void gemm(
-        alpaka::BufCpu<T, Dim1D, Idx> const& A,
-        alpaka::BufCpu<T, Dim1D, Idx> const& B,
-        alpaka::BufCpu<T, Dim1D, Idx>& C,
-        Idx size)
+        alpaka::BufCpu<T, alpaka::DimInt<1u>, TIdx> const& A,
+        alpaka::BufCpu<T, alpaka::DimInt<1u>, TIdx> const& B,
+        alpaka::BufCpu<T, alpaka::DimInt<1u>, TIdx>& C,
+        TIdx size)
     {
         assert(alpaka::getExtentProduct(A) == size * size);
         assert(alpaka::getExtentProduct(B) == size * size);
